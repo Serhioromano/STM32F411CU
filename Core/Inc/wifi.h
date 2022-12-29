@@ -27,6 +27,8 @@ Tuya is not responsible for the results of MCU functions.
 #include "protocol.h"
 #include "system.h"
 #include "mcu_api.h"
+#include "stm32f4xx_hal.h"
+
 
 
 //=============================================================================

@@ -21,9 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-// #include "wifi.h"
-// #include "protocol.h"
-// #include "mcu_api.h"
+#include "wifi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,8 +106,6 @@ int main(void)
         {
             HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
         }
-        HAL_UART_Transmit
-        
 
         /* USER CODE END WHILE */
 
