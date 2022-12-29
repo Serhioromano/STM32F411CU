@@ -1,0 +1,61 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build all",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j4",
+                "all"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Build clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Upload",
+            "type": "shell",
+            "command": "sudo",
+            "args": [
+                "st-flash",
+                "--reset",
+                "write",
+                "build/STM32F411CU.bin",
+                "0x08000000"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Build & Upload",
+            "dependsOn": [
+                "Build clean",
+                "Build all",
+                "Upload"
+            ]
+        }
+    ]
+}

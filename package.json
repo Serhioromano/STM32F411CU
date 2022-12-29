@@ -1,0 +1,30 @@
+{
+    "name": "@<scope>/STM32F411CU",
+    "version": "0.1.0",
+    "description": "A source xPack with <your-description-here>",
+    "main": "",
+    "scripts": {
+        "upload": "sudo st-flash --reset write build/STM32F411CU.bin 0x08000000",
+        "build": "make -j4",
+        "clean_upload": "make clean && make -j4 && sudo st-flash --reset write build/STM32F411CU.bin 0x08000000"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/serhioromano/STM32F411CU.git"
+    },
+    "homepage": "https://github.com/serhioromano/STM32F411CU/",
+    "bugs": {
+        "url": "https://github.com/serhioromano/STM32F411CU/issues/"
+    },
+    "keywords": [
+        "stm32"
+    ],
+    "author": {
+        "name": "Sergey Romanov",
+        "email": "serhioromano@outlok.com"
+    },
+    "license": "MIT",
+    "config": {},
+    "dependencies": {},
+    "devDependencies": {}
+}

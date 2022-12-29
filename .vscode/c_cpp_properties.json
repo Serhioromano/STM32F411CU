@@ -1,0 +1,41 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Core/Inc",
+                "${workspaceFolder}/Core/Src",
+                "${workspaceFolder}/Core/SDK",
+                "${workspaceFolder}/Drivers/CMSIS/Include",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc"
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32F411xE",
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "${workspaceFolder}/Core/Inc",
+                    "${workspaceFolder}/Core/Src",
+                    "${workspaceFolder}/Core/SDK",
+                    "${workspaceFolder}/Drivers/CMSIS/Include",
+                    "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                    "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/brows.vs.db"
+            }
+        },
+    ],
+    "version": 4
+}

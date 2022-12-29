@@ -1,0 +1,23 @@
+{
+    "files.associations": {
+        "main.h": "c",
+        "stm32f4xx_hal.h": "c",
+        "protocol.h": "c",
+        "wifi.h": "c",
+        "mcu_api.h": "c",
+        "system.h": "c",
+        "stm32f4xx_hal_def.h": "c"
+    },
+    "spellright.language": [
+        "en"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext"
+    ],
+    "terminal.integrated.autoReplies": {
+        "[sudo] password for sergey:": ""
+    },
+    "cortex-debug.stutilPath": "/usr/bin/st-util"
+}
