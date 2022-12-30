@@ -1,9 +1,20 @@
 {
 	"name": "STM32",
-    "privileged": true,
-	"runArgs": ["-e TEST=1"],
+	"privileged": true,
+	"runArgs": [
+		"-e TEST=1"
+	],
 	"build": {
 		"context": "..",
 		"dockerfile": "../Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"johnpapa.vscode-peacock",
+				"ms-vscode.cpptools-extension-pack",
+				"ms-vscode.makefile-tools"
+			]
+		}
 	}
 }
