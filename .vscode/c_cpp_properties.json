@@ -4,7 +4,6 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/Core/SDK",
                 "${workspaceFolder}/Core/Inc",
                 "${workspaceFolder}/Core/Src",
                 "${workspaceFolder}/Drivers/CMSIS/Include",
@@ -20,14 +19,14 @@
             ],
             "cStandard": "c11",
             "cppStandard": "c++20",
-            "intelliSenseMode": "linux-gcc-x64",
+            "compilerPath": "/opt/gcc-arm-none-eabi/bin/arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm",
             "configurationProvider": "ms-vscode.makefile-tools",
             "browse": {
                 "path": [
                     "${workspaceFolder}/**",
                     "${workspaceFolder}/Core/Inc",
                     "${workspaceFolder}/Core/Src",
-                    "${workspaceFolder}/Core/SDK",
                     "${workspaceFolder}/Drivers/CMSIS/Include",
                     "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
                     "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc"

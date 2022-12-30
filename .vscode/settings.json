@@ -21,7 +21,9 @@
     "terminal.integrated.autoReplies": {
         "[sudo] password for sergey:": ""
     },
-    "cortex-debug.stutilPath": "/usr/bin/st-util",
     "git.autofetch": true,
-    "git.autofetchPeriod": 3600
+    "git.autofetchPeriod": 3600,
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "cortex-debug.gdbPath": "/usr/bin/gdb",
+    "cortex-debug.stutilPath": "/usr/bin/st-util"
 }

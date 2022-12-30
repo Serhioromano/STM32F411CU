@@ -638,7 +638,7 @@ unsigned long mcu_get_dp_download_value(const unsigned char value[], unsigned sh
  */
 void uart_receive_input(unsigned char value)
 {
-#error "Please call uart_receive_input(value) in the serial port receive interrupt. The serial port data is processed by MCU_SDK. The user should not process it separately. Delete the line after completion."
+    // #error "Please call uart_receive_input(value) in the serial port receive interrupt. The serial port data is processed by MCU_SDK. The user should not process it separately. Delete the line after completion."
 
     if (1 == rx_buf_out - rx_buf_in)
     {
@@ -669,8 +669,7 @@ void uart_receive_input(unsigned char value)
  */
 void uart_receive_buff_input(unsigned char value[], unsigned short data_len)
 {
-#error "Please call this function where you need to cache multiple bytes of serial port data at a time. The serial port data is processed by MCU_SDK. The user should not process it separately, and delete the line after completion行"
-
+    // #error "Please call this function where you need to cache multiple bytes of serial port data at a time. The serial port data is processed by MCU_SDK. The user should not process it separately, and delete the line after completion行"
     unsigned short i = 0;
     for (i = 0; i < data_len; i++)
     {

@@ -1,0 +1,9 @@
+{
+	"name": "STM32",
+    "privileged": true,
+	"runArgs": ["-e TEST=1"],
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	}
+}

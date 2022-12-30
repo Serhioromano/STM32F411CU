@@ -9,16 +9,16 @@
  * @author  Tuya Comprehensive Agreement Development Group
  * @version v2.5.6
  * @date    2020.12.16
- * @brief                
+ * @brief
  *                       *******Very important, be sure to watch!!!********
  *          1. The user implements the data delivery/reporting function in this file.
  *          2. DP ID / TYPE and data processing functions require the user to implement according to the actual definition
- *          3. There are #err hints inside the function that needs the user to implement the code after starting some macro definitions. 
+ *          3. There are #err hints inside the function that needs the user to implement the code after starting some macro definitions.
  *             Please delete the #err after completing the function.
  */
 
 /****************************** Disclaimer ！！！ *******************************
-Due to the variety of MCU types and compilation environments, this code is for reference only. 
+Due to the variety of MCU types and compilation environments, this code is for reference only.
 Users should control the quality of the final code by themselves.
 Tuya is not responsible for the results of MCU functions.
 ******************************************************************************/
@@ -26,9 +26,9 @@ Tuya is not responsible for the results of MCU functions.
 /******************************************************************************
                                 Transplant instructions:
 1:The MCU must directly call the wifi_uart_service() function in mcu_api.c in the while.
-2:After the normal initialization of the program is completed, 
-  it is recommended not to turn off the serial port interrupt. 
-  If the interrupt must be turned off, the off interrupt time must be short, 
+2:After the normal initialization of the program is completed,
+  it is recommended not to turn off the serial port interrupt.
+  If the interrupt must be turned off, the off interrupt time must be short,
   and the interrupt will cause the serial port packet to be lost.
 3:Do not call the escalation function in the interrupt/timer interrupt
 ******************************************************************************/
@@ -70,9 +70,9 @@ const char *weather_choose[WEATHER_CHOOSE_CNT] = {
                               The first step: initialization
 1:Include "wifi.h" in files that need to use wifi related files
 2:Call the wifi_protocol_init() function in the mcu_api.c file in the MCU initialization
-3:Fill the MCU serial single-byte send function into the uart_transmit_output 
+3:Fill the MCU serial single-byte send function into the uart_transmit_output
    function in the protocol.c file, and delete #error
-4:Call the uart_receive_input function in the mcu_api.c file in the MCU serial receive 
+4:Call the uart_receive_input function in the mcu_api.c file in the MCU serial receive
    function and pass the received byte as a parameter.
 5:The wifi_uart_service() function in the mcu_api.c file is called after the MCU enters the while loop.
 ******************************************************************************/
@@ -83,16 +83,14 @@ const char *weather_choose[WEATHER_CHOOSE_CNT] = {
               the development platform, please re-download MCU_SDK**
 ******************************************************************************/
 const DOWNLOAD_CMD_S download_cmd[] =
-{
-  {DPID_CUR_PRESS, DP_TYPE_VALUE},
-  {DPID_PRESS_SET, DP_TYPE_VALUE},
-  {DPID_PUMP_STATE, DP_TYPE_BOOL},
-  {DPID_PUMP_EN, DP_TYPE_BOOL},
-  {DPID_SENS_MAX, DP_TYPE_VALUE},
-  {DPID_PRESS_DELATA, DP_TYPE_VALUE},
+    {
+        {DPID_CUR_PRESS, DP_TYPE_VALUE},
+        {DPID_PRESS_SET, DP_TYPE_VALUE},
+        {DPID_PUMP_STATE, DP_TYPE_BOOL},
+        {DPID_PUMP_EN, DP_TYPE_BOOL},
+        {DPID_SENS_MAX, DP_TYPE_VALUE},
+        {DPID_PRESS_DELATA, DP_TYPE_VALUE},
 };
-
-
 
 /******************************************************************************
                         2:Serial single-byte send function
@@ -107,14 +105,16 @@ and pass the received data as a parameter to the serial port send function.
  */
 void uart_transmit_output(unsigned char value)
 {
-    #error "Please fill in the MCU serial port send function and delete the line"
-    
+    extern UART_HandleTypeDef huart1;
 
-/*
-    //Example:
-    extern void Uart_PutChar(unsigned char value);
-    Uart_PutChar(value);	                                //Serial port send function
-*/
+    HAL_UART_Transmit(&huart1, (uint8_t *)value, sizeof(value), HAL_MAX_DELAY);
+
+    /*
+        #error "Please fill in the MCU serial port send function and delete the line"
+        //Example:
+        extern void Uart_PutChar(unsigned char value);
+        Uart_PutChar(value);	                                //Serial port send function
+    */
 }
 
 /******************************************************************************
@@ -134,7 +134,7 @@ This function must be called internally by the MCU.
 Users can also call this function to achieve all data upload.
 ******************************************************************************/
 
-//Automated generation of data reporting functions
+// Automated generation of data reporting functions
 
 /**
  * @brief  All dp point information of the system is uploaded to realize APP and muc data synchronization
@@ -146,24 +146,23 @@ Users can also call this function to achieve all data upload.
  */
 void all_data_update(void)
 {
-    mcu_dp_bool_update(DPID_PUMP_EN,current Enable pump); //BOOL data report;
-    
-    // #error "Please process the reportable data and report only the data. After the processing is completed, delete the line"
-    /*
-    //This code is automatically generated by the platform. 
-    //Please modify each reportable and reportable function according to the actual data.
-    mcu_dp_value_update(DPID_CUR_PRESS,current Current Pressure); //VALUE type data report;
-    mcu_dp_value_update(DPID_PRESS_SET,current Set target pressure); //VALUE type data report;
-    mcu_dp_bool_update(DPID_PUMP_STATE,current Pupm state); //BOOL data report;
-    mcu_dp_value_update(DPID_SENS_MAX,current Sensor max. pressure); //VALUE type data report;
-    mcu_dp_value_update(DPID_PRESS_DELATA,current Set delta); //VALUE type data report;
+    extern unsigned char dp_pump_enable;
+    extern unsigned char dp_pump_state;
+    extern unsigned long dp_curr_press;
+    extern unsigned long dp_set_press;
+    extern unsigned long dp_delt_press;
+    extern unsigned long dp_sens_max;
 
-    */
+    mcu_dp_bool_update(DPID_PUMP_EN, dp_pump_enable);
+    mcu_dp_bool_update(DPID_PUMP_STATE, dp_pump_state);
+    mcu_dp_value_update(DPID_CUR_PRESS, dp_curr_press);
+    mcu_dp_value_update(DPID_PRESS_SET, dp_set_press);
+    mcu_dp_value_update(DPID_SENS_MAX, dp_sens_max);
+    mcu_dp_value_update(DPID_PRESS_DELATA, dp_delt_press);
 }
 
-
 /******************************************************************************
-                                WARNING!!!    
+                                WARNING!!!
                             2:All data upload processing
 Automate code template functions, please implement data processing by yourself
 ******************************************************************************/
@@ -177,19 +176,13 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_press_set_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isVALUE
     unsigned char ret;
-    unsigned long press_set;
-    
-    press_set = mcu_get_dp_download_value(value,length);
-    /*
-    //VALUE type data processing
-    
-    */
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_PRESS_SET,press_set);
-    if(ret == SUCCESS)
+    extern unsigned long dp_set_press;
+
+    dp_set_press = mcu_get_dp_download_value(value, length);
+
+    ret = mcu_dp_value_update(DPID_PRESS_SET, dp_set_press);
+    if (ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
@@ -204,25 +197,18 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_pump_en_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isBOOL
     unsigned char ret;
-    //0:off/1:on
-    unsigned char pump_en;
-    
-    pump_en = mcu_get_dp_download_bool(value,length);
-    if(pump_en == 0) {
-        //bool off
-    }else {
-        //bool on
-    }
-  
-    //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_PUMP_EN,pump_en);
-    if(ret == SUCCESS)
+    extern unsigned char dp_pump_enable;
+
+    dp_pump_enable = mcu_get_dp_download_bool(value, length);
+
+    ret = mcu_dp_bool_update(DPID_PUMP_EN, dp_pump_enable);
+    if (ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
 }
+
 /*****************************************************************************
 Function name : dp_download_sens_max_handle
 Function description : on DPID_SENS_MAX processing function
@@ -233,19 +219,19 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_sens_max_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isVALUE
+    // Example: The current DP type isVALUE
     unsigned char ret;
     unsigned long sens_max;
-    
-    sens_max = mcu_get_dp_download_value(value,length);
+
+    sens_max = mcu_get_dp_download_value(value, length);
     /*
     //VALUE type data processing
-    
+
     */
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_SENS_MAX,sens_max);
-    if(ret == SUCCESS)
+
+    // There should be a report after processing the DP
+    ret = mcu_dp_value_update(DPID_SENS_MAX, sens_max);
+    if (ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
@@ -260,29 +246,26 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_press_delata_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isVALUE
+    // Example: The current DP type isVALUE
     unsigned char ret;
     unsigned long press_delata;
-    
-    press_delata = mcu_get_dp_download_value(value,length);
+
+    press_delata = mcu_get_dp_download_value(value, length);
     /*
     //VALUE type data processing
-    
+
     */
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_PRESS_DELATA,press_delata);
-    if(ret == SUCCESS)
+
+    // There should be a report after processing the DP
+    ret = mcu_dp_value_update(DPID_PRESS_DELATA, press_delata);
+    if (ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
 }
 
-
-
-
 /******************************************************************************
-                                WARNING!!!                     
+                                WARNING!!!
 The following function users do not modify!!
 ******************************************************************************/
 
@@ -296,34 +279,34 @@ The following function users do not modify!!
  * -           1(SUCCESS): success
  * @note   The function user cannot modify
  */
-unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[], unsigned short length)
+unsigned char dp_download_handle(unsigned char dpid, const unsigned char value[], unsigned short length)
 {
     /*********************************
-    Current function processing can issue/report data calls                    
+    Current function processing can issue/report data calls
     Need to implement the data processing in the specific function
     The result of the processing needs to be fed back to the APP, otherwise the APP will consider the delivery failure.
     ***********************************/
     unsigned char ret;
-    switch(dpid) {
-        case DPID_PRESS_SET:
-            //Set target pressureprocessing function
-            ret = dp_download_press_set_handle(value,length);
+    switch (dpid)
+    {
+    case DPID_PRESS_SET:
+        // Set target pressureprocessing function
+        ret = dp_download_press_set_handle(value, length);
         break;
-        case DPID_PUMP_EN:
-            //Enable pumpprocessing function
-            ret = dp_download_pump_en_handle(value,length);
+    case DPID_PUMP_EN:
+        // Enable pumpprocessing function
+        ret = dp_download_pump_en_handle(value, length);
         break;
-        case DPID_SENS_MAX:
-            //Sensor max. pressureprocessing function
-            ret = dp_download_sens_max_handle(value,length);
+    case DPID_SENS_MAX:
+        // Sensor max. pressureprocessing function
+        ret = dp_download_sens_max_handle(value, length);
         break;
-        case DPID_PRESS_DELATA:
-            //Set deltaprocessing function
-            ret = dp_download_press_delata_handle(value,length);
+    case DPID_PRESS_DELATA:
+        // Set deltaprocessing function
+        ret = dp_download_press_delata_handle(value, length);
         break;
 
-        
-        default:
+    default:
         break;
     }
     return ret;
@@ -337,12 +320,11 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
  */
 unsigned char get_download_cmd_total(void)
 {
-    return(sizeof(download_cmd) / sizeof(download_cmd[0]));
+    return (sizeof(download_cmd) / sizeof(download_cmd[0]));
 }
 
-
 /******************************************************************************
-                                WARNING!!!                     
+                                WARNING!!!
 This code is called internally by the SDK.
 Please implement the internal data of the function according to the actual dp data.
 ******************************************************************************/
@@ -359,7 +341,7 @@ Please implement the internal data of the function according to the actual dp da
  */
 void upgrade_package_choose(unsigned char package_sz)
 {
-    #error "Please implement the upgrade package size selection processing code by yourself. Please delete this line after completion"
+    // #error "Please implement the upgrade package size selection processing code by yourself. Please delete this line after completion"
     unsigned short send_len = 0;
     send_len = set_wifi_uart_byte(send_len, package_sz);
     wifi_uart_write_frame(UPDATE_START_CMD, MCU_TX_VER, send_len);
@@ -373,17 +355,18 @@ void upgrade_package_choose(unsigned char package_sz)
  * @return Null
  * @note   MCU needs to implement this function by itself
  */
-unsigned char mcu_firm_update_handle(const unsigned char value[],unsigned long position,unsigned short length)
+unsigned char mcu_firm_update_handle(const unsigned char value[], unsigned long position, unsigned short length)
 {
-    #error "Please complete the MCU firmware upgrade processing code yourself. Please delete the line after completion"
-    if(length == 0) {
-        //Firmware data transmission completed
-      
-    }else {
-        //Firmware data processing
-      
+    // #error "Please complete the MCU firmware upgrade processing code yourself. Please delete the line after completion"
+    if (length == 0)
+    {
+        // Firmware data transmission completed
     }
-    
+    else
+    {
+        // Firmware data processing
+    }
+
     return SUCCESS;
 }
 #endif
@@ -397,7 +380,7 @@ unsigned char mcu_firm_update_handle(const unsigned char value[],unsigned long p
  */
 void mcu_get_greentime(unsigned char time[])
 {
-    #error "Complete the code yourself and delete the line"
+#error "Complete the code yourself and delete the line"
     /*
     time[0] is the flag of success for obtaining the time,0: failure / 1: success
     time[1] is year, 0x00 :2000 year
@@ -407,11 +390,13 @@ void mcu_get_greentime(unsigned char time[])
     time[5] is minute, It starts at 0 and ends at 59
     time[6] is second, It starts at 0 and ends at 59
     */
-    if(time[0] == 1) {
-        //Receive the green data returned by wifi module correctly
-        
-    }else {
-        //There is an error in obtaining the green time. It may be that the current wifi module is not connected to the Internet
+    if (time[0] == 1)
+    {
+        // Receive the green data returned by wifi module correctly
+    }
+    else
+    {
+        // There is an error in obtaining the green time. It may be that the current wifi module is not connected to the Internet
     }
 }
 #endif
@@ -425,7 +410,7 @@ void mcu_get_greentime(unsigned char time[])
  */
 void mcu_write_rtctime(unsigned char time[])
 {
-    #error "Please complete the RTC clock write code yourself and delete the line"
+#error "Please complete the RTC clock write code yourself and delete the line"
     /*
     Time[0] is the time success flag, 0 is a failure, and 1 is a success.
     Time[1] is the year and 0x00 is the year 2000.
@@ -436,11 +421,13 @@ void mcu_write_rtctime(unsigned char time[])
     Time[6] is seconds, starting from 0 to ending at 59
     Time[7] is the week, starting from 1 to 7 and 1 is Monday.
    */
-    if(time[0] == 1) {
-        //Correctly receive the local clock data returned by the wifi module
-     
-    }else {
-        //Error getting local clock data, it may be that the current wifi module is not connected
+    if (time[0] == 1)
+    {
+        // Correctly receive the local clock data returned by the wifi module
+    }
+    else
+    {
+        // Error getting local clock data, it may be that the current wifi module is not connected
     }
 }
 #endif
@@ -455,26 +442,32 @@ void mcu_write_rtctime(unsigned char time[])
  * @return Null
  * @note   MCU needs to implement this function by itself
  */
-void wifi_test_result(unsigned char result,unsigned char rssi)
+void wifi_test_result(unsigned char result, unsigned char rssi)
 {
-    #error "Please implement the wifi function test success/failure code by yourself. Please delete the line after completion"
-    if(result == 0) {
-        //Test failed
-        if(rssi == 0x00) {
-            //Can't scan to the router named tuya_mdev_test, please check
-        }else if(rssi == 0x01) {
-            //Module not authorized
+    // #error "Please implement the wifi function test success/failure code by yourself. Please delete the line after completion"
+    if (result == 0)
+    {
+        // Test failed
+        if (rssi == 0x00)
+        {
+            // Can't scan to the router named tuya_mdev_test, please check
         }
-    }else {
-        //Test success
-        //rssi is the signal strength (0-100, 0 signal is the worst, 100 signal is the strongest)
+        else if (rssi == 0x01)
+        {
+            // Module not authorized
+        }
+    }
+    else
+    {
+        // Test success
+        // rssi is the signal strength (0-100, 0 signal is the worst, 100 signal is the strongest)
     }
 }
 #endif
 
 #ifdef WEATHER_ENABLE
 /**
-* @brief  Open weather service
+ * @brief  Open weather service
  * @param  Null
  * @return Null
  */
@@ -484,26 +477,27 @@ void mcu_open_weather(void)
     char buffer[13] = {0};
     unsigned char weather_len = 0;
     unsigned short send_len = 0;
-    
+
     weather_len = sizeof(weather_choose) / sizeof(weather_choose[0]);
-      
-    for(i=0;i<weather_len;i++) {
-        buffer[0] = sprintf(buffer+1,"w.%s",weather_choose[i]);
-        send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
+
+    for (i = 0; i < weather_len; i++)
+    {
+        buffer[0] = sprintf(buffer + 1, "w.%s", weather_choose[i]);
+        send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0] + 1);
     }
-    
-    #error "Please read the following instructions,After the processing is completed, delete the line"
+
+#error "Please read the following instructions,After the processing is completed, delete the line"
     /*
-    //When the parameters obtained have parameters related to time (such as sunrise and sunset), 
+    //When the parameters obtained have parameters related to time (such as sunrise and sunset),
     //they need to be used with t.unix or t.local, and whether the parameter data needed to be acquired is based on green time or local time.
-    
+
     buffer[0] = sprintf(buffer+1,"t.unix"); //green time   or use  // buffer[0] = sprintf(buffer+1,"t.local"); //local time
     length = set_wifi_uart_buffer(length, (unsigned char *)buffer, buffer[0]+1);
     */
-    
-    buffer[0] = sprintf(buffer+1,"w.date.%d",WEATHER_FORECAST_DAYS_NUM);
-    send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0]+1);
-    
+
+    buffer[0] = sprintf(buffer + 1, "w.date.%d", WEATHER_FORECAST_DAYS_NUM);
+    send_len = set_wifi_uart_buffer(send_len, (unsigned char *)buffer, buffer[0] + 1);
+
     wifi_uart_write_frame(WEATHER_OPEN_CMD, MCU_TX_VER, send_len);
 }
 
@@ -518,15 +512,18 @@ void mcu_open_weather(void)
  */
 void weather_open_return_handle(unsigned char res, unsigned char err)
 {
-    #error "Please complete the M open weather function to return the data processing code. Please delete the line after completion"
+#error "Please complete the M open weather function to return the data processing code. Please delete the line after completion"
     unsigned char err_num = 0;
-    
-    if(res == 1) {
-        //Open the weather and return successfully
-    }else if(res == 0) {
-        //Open weather return failed
-        //Get the error code
-        err_num = err; 
+
+    if (res == 1)
+    {
+        // Open the weather and return successfully
+    }
+    else if (res == 0)
+    {
+        // Open weather return failed
+        // Get the error code
+        err_num = err;
     }
 }
 
@@ -545,28 +542,38 @@ void weather_open_return_handle(unsigned char res, unsigned char err)
  */
 void weather_data_user_handle(char *name, unsigned char type, const unsigned char *data, char day)
 {
-    #error "Here is just an example. Please correct the weather data processing code yourself. Please delete the line after you finish."
+#error "Here is just an example. Please correct the weather data processing code yourself. Please delete the line after you finish."
     int value_int;
-    char value_string[50];//Since there are many parameters, the default is 50. You can reduce this value appropriately based on the defined parameters.
-    
+    char value_string[50]; // Since there are many parameters, the default is 50. You can reduce this value appropriately based on the defined parameters.
+
     my_memset(value_string, '\0', 50);
-    
-  //First get the data type
-    if(type == 0) { //The parameter is INT type
+
+    // First get the data type
+    if (type == 0)
+    { // The parameter is INT type
         value_int = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
-    }else if(type == 1) {
+    }
+    else if (type == 1)
+    {
         my_strcpy(value_string, data);
     }
-    
-    //Note that the parameter value is obtained according to the selected parameter type!!!
-    if(my_strcmp(name, "temp") == 0) {
-        printf("day:%d temp value is:%d\r\n", day, value_int);          //int type
-    }else if(my_strcmp(name, "humidity") == 0) {
-        printf("day:%d humidity value is:%d\r\n", day, value_int);      //int type
-    }else if(my_strcmp(name, "pm25") == 0) {
-        printf("day:%d pm25 value is:%d\r\n", day, value_int);          //int type
-    }else if(my_strcmp(name, "condition") == 0) {
-        printf("day:%d condition value is:%s\r\n", day, value_string);  //string type
+
+    // Note that the parameter value is obtained according to the selected parameter type!!!
+    if (my_strcmp(name, "temp") == 0)
+    {
+        printf("day:%d temp value is:%d\r\n", day, value_int); // int type
+    }
+    else if (my_strcmp(name, "humidity") == 0)
+    {
+        printf("day:%d humidity value is:%d\r\n", day, value_int); // int type
+    }
+    else if (my_strcmp(name, "pm25") == 0)
+    {
+        printf("day:%d pm25 value is:%d\r\n", day, value_int); // int type
+    }
+    else if (my_strcmp(name, "condition") == 0)
+    {
+        printf("day:%d condition value is:%s\r\n", day, value_string); // string type
     }
 }
 #endif
@@ -582,12 +589,15 @@ void weather_data_user_handle(char *name, unsigned char type, const unsigned cha
  */
 void get_upload_syn_result(unsigned char result)
 {
-    #error "Please complete the status report result processing code by yourself and delete the line"
-      
-    if(result == 0) {
-        //Synchronous report error
-    }else {
-        //Report synchronously successfully
+#error "Please complete the status report result processing code by yourself and delete the line"
+
+    if (result == 0)
+    {
+        // Synchronous report error
+    }
+    else
+    {
+        // Report synchronously successfully
     }
 }
 #endif
@@ -608,38 +618,40 @@ void get_upload_syn_result(unsigned char result)
  */
 void get_wifi_status(unsigned char result)
 {
-    #error "Complete the get the WIFI status result processing code yourself and delete the line"
- 
-    switch(result) {
-        case 0:
-            //wifi working state 1
+    // #error "Complete the get the WIFI status result processing code yourself and delete the line"
+
+    switch (result)
+    {
+    case 0:
+        // wifi working state 1
         break;
-    
-        case 1:
-            //wifi working state 2
+
+    case 1:
+        // wifi working state 2
         break;
-        
-        case 2:
-            //wifi working state 3
+
+    case 2:
+        // wifi working state 3
         break;
-        
-        case 3:
-            //wifi working state 4
+
+    case 3:
+        // wifi working state 4
         break;
-        
-        case 4:
-            //wifi working state 5
+
+    case 4:
+        // wifi working state 5
         break;
-        
-        case 5:
-            //wifi working state 6
+
+    case 5:
+        // wifi working state 6
         break;
-      
-        case 6:
-            //wifi working state 7
+
+    case 6:
+        // wifi working state 7
         break;
-        
-        default:break;
+
+    default:
+        break;
     }
 }
 #endif
@@ -658,29 +670,31 @@ void get_wifi_status(unsigned char result)
  */
 void stream_trans_send_result(unsigned char result)
 {
-    #error "Complete the get the streaming service sending results code yourself and delete the line"
-    switch(result) {
-        case 0x00:
-            //success
+#error "Complete the get the streaming service sending results code yourself and delete the line"
+    switch (result)
+    {
+    case 0x00:
+        // success
         break;
-        
-        case 0x01:
-            //Streaming service feature is not enabled
+
+    case 0x01:
+        // Streaming service feature is not enabled
         break;
-        
-        case 0x02:
-            //The streaming server is not connected successfully
+
+    case 0x02:
+        // The streaming server is not connected successfully
         break;
-        
-        case 0x03:
-            //Data push timeout
+
+    case 0x03:
+        // Data push timeout
         break;
-        
-        case 0x04:
-            //Wrong data length
+
+    case 0x04:
+        // Wrong data length
         break;
-        
-        default:break;
+
+    default:
+        break;
     }
 }
 
@@ -694,17 +708,19 @@ void stream_trans_send_result(unsigned char result)
  */
 void maps_stream_trans_send_result(unsigned char result)
 {
-    #error "Complete the get the Multi-map streaming service sending results code yourself and delete the line"
-    switch(result) {
-        case 0x00:
-            //success
+#error "Complete the get the Multi-map streaming service sending results code yourself and delete the line"
+    switch (result)
+    {
+    case 0x00:
+        // success
         break;
-        
-        case 0x01:
-            //fault
+
+    case 0x01:
+        // fault
         break;
-        
-        default:break;
+
+    default:
+        break;
     }
 }
 #endif
@@ -720,11 +736,14 @@ void maps_stream_trans_send_result(unsigned char result)
  */
 void wifi_connect_test_result(unsigned char result)
 {
-    #error "Please implement the successful/failed wifi function test processing code by yourself, and delete the line after completion"
-    if(result == 0) {
-        //The routing message failed to receive. Please check whether the routing packet sent is a complete JSON packet
-    }else {
-        //The routing information was received successfully. Please pay attention to the wifi working state of WIFI_STATE_CMD command
+#error "Please implement the successful/failed wifi function test processing code by yourself, and delete the line after completion"
+    if (result == 0)
+    {
+        // The routing message failed to receive. Please check whether the routing packet sent is a complete JSON packet
+    }
+    else
+    {
+        // The routing information was received successfully. Please pay attention to the wifi working state of WIFI_STATE_CMD command
     }
 }
 #endif
@@ -740,16 +759,19 @@ void wifi_connect_test_result(unsigned char result)
  */
 void mcu_get_mac(unsigned char mac[])
 {
-    #error "Complete the MAC fetch processing code yourself and delete the line"
+#error "Complete the MAC fetch processing code yourself and delete the line"
     /*
     mac[0] is whether to get the MAC success flag,  0x00 success, 0x01 failure
     mac[1]~mac[6]:When obtaining the MAC address flag bit MAC [0] is successful, it represents the valid MAC address of the module
    */
-   
-    if(mac[0] == 1) {
-        //Error getting MAC
-    }else {
-        //Receive the MAC address returned by wifi module correctly
+
+    if (mac[0] == 1)
+    {
+        // Error getting MAC
+    }
+    else
+    {
+        // Receive the MAC address returned by wifi module correctly
     }
 }
 #endif
@@ -767,27 +789,29 @@ void mcu_get_mac(unsigned char mac[])
  */
 void get_ir_status(unsigned char result)
 {
-    #error "Please complete the infrared status processing code by yourself and delete the line"
-    switch(result) {
-        case 0:
-            //Infrared state 1
+#error "Please complete the infrared status processing code by yourself and delete the line"
+    switch (result)
+    {
+    case 0:
+        // Infrared state 1
         break;
-      
-        case 1:
-            //Infrared state 2
+
+    case 1:
+        // Infrared state 2
         break;
-          
-        case 2:
-            //Infrared state 3
+
+    case 2:
+        // Infrared state 3
         break;
-          
-        case 3:
-            //Infrared state 4
+
+    case 3:
+        // Infrared state 4
         break;
-          
-        default:break;
+
+    default:
+        break;
     }
-    
+
     wifi_uart_write_frame(GET_IR_STATUS_CMD, MCU_TX_VER, 0);
 }
 #endif
@@ -803,11 +827,14 @@ void get_ir_status(unsigned char result)
  */
 void ir_tx_rx_test_result(unsigned char result)
 {
-    #error "Please implement the infrared entry, send, receive, and test functions by yourself. Please delete this line after completion"
-    if(result == 0) {
-        //Infrared into the transceiver production test successful
-    }else {
-        //Infrared incoming transceiver production test failed, please check the sent packet
+#error "Please implement the infrared entry, send, receive, and test functions by yourself. Please delete this line after completion"
+    if (result == 0)
+    {
+        // Infrared into the transceiver production test successful
+    }
+    else
+    {
+        // Infrared incoming transceiver production test failed, please check the sent packet
     }
 }
 #endif
@@ -824,7 +851,7 @@ void ir_tx_rx_test_result(unsigned char result)
  */
 void file_download_package_choose(unsigned char package_sz)
 {
-    #error "Please complete the file download package size selection processing code by yourself and delete the line"
+#error "Please complete the file download package size selection processing code by yourself and delete the line"
     unsigned short send_len = 0;
     send_len = set_wifi_uart_byte(send_len, package_sz);
     wifi_uart_write_frame(FILE_DOWNLOAD_START_CMD, MCU_TX_VER, send_len);
@@ -840,17 +867,18 @@ void file_download_package_choose(unsigned char package_sz)
  * -           1(SUCCESS): success
  * @note   MCU needs to implement this function by itself
  */
-unsigned char file_download_handle(const unsigned char value[],unsigned long position,unsigned short length)
+unsigned char file_download_handle(const unsigned char value[], unsigned long position, unsigned short length)
 {
-  #error "Please complete the file download selection processing code by yourself and delete the line"
-    if(length == 0) {
-        //File package data sending completed
-        
-    }else {
-        //File package data processing
-      
+#error "Please complete the file download selection processing code by yourself and delete the line"
+    if (length == 0)
+    {
+        // File package data sending completed
     }
-    
+    else
+    {
+        // File package data processing
+    }
+
     return SUCCESS;
 }
 #endif
@@ -865,109 +893,132 @@ unsigned char file_download_handle(const unsigned char value[],unsigned long pos
  */
 void open_module_time_serve_result(const unsigned char value[], unsigned short length)
 {
-    #error "Please complete the Module time service notification results processing code by yourself and delete the line"
+#error "Please complete the Module time service notification results processing code by yourself and delete the line"
     unsigned char sub_cmd = value[0];
-    
-    switch(sub_cmd) {
-        case 0x01: { //Subcommand  Turn on module time service notification
-            if(0x02 != length) {
-                //Data length error
-                return;
-            }
-            
-            if(value[1] == 0) {
-                //Service started successfully
-            }else {
-                //Service startup failure
-            }
+
+    switch (sub_cmd)
+    {
+    case 0x01:
+    { // Subcommand  Turn on module time service notification
+        if (0x02 != length)
+        {
+            // Data length error
+            return;
         }
-        break;
-        
-        case 0x02: {  //Subcommand  Module time service notification
-            if(0x09 != length) {
-                //Data length error
-                return;
-            }
-            
-            unsigned char time_type = value[1]; //0x00:Green time    0x01:Local time
-            unsigned char time_data[7];
-            
-            my_memcpy(time_data, value + 2, length - 2);
-            /*
-            Data[0] is the year and 0x00 is the year 2000.
-            Data[1] is the month, starting from 1 to ending at 12
-            Data[2] is the date, starting from 1 to 31
-            Data[3] is the clock, starting from 0 to ending at 23
-            Data[4] is minutes, starting from 0 to ending at 59
-            Data[5] is seconds, starting from 0 to ending at 59
-            Data[6] is the week, starting from 1 to 7 and 1 is Monday.
-            */
-            
-            //Add the time data handling code here, with time_type as the time type
-            
-            unsigned short send_len = 0;
-            send_len = set_wifi_uart_byte(send_len,sub_cmd);
-            wifi_uart_write_frame(MODULE_EXTEND_FUN_CMD, MCU_TX_VER, send_len);
+
+        if (value[1] == 0)
+        {
+            // Service started successfully
         }
-        break;
-        
-        case 0x03: {  //Subcommand  Actively request weather service data
-            if(0x02 != length) {
-                //Data length error
-                return;
-            }
-            
-            if(value[1] == 0) {
-                //success
-            }else {
-                //fault
-            }
+        else
+        {
+            // Service startup failure
         }
-        break;
-        
-        case 0x04: {  //Subcommand  Open module reset status notification
-            if(0x02 != length) {
-                //Data length error
-                return;
-            }
-            
-            if(value[1] == 0) {
-                //success
-            }else {
-                //fault
-            }
+    }
+    break;
+
+    case 0x02:
+    { // Subcommand  Module time service notification
+        if (0x09 != length)
+        {
+            // Data length error
+            return;
         }
-        break;
-        
-        case 0x05: {  //Subcommand  Module reset status notification
-            if(0x02 != length) {
-                //Data length error
-                return;
-            }
-            
-            switch(value[1]) {
-                case 0x00:
-                    //Module local reset
-                    
-                break;
-                case 0x01:
-                    //APP remote reset
-                    
-                break;
-                case 0x02:
-                    //APP factory reset
-                    
-                break;
-                default:break;
-            }
-            
-            unsigned short send_len = 0;
-            send_len = set_wifi_uart_byte(send_len, sub_cmd);
-            wifi_uart_write_frame(MODULE_EXTEND_FUN_CMD, MCU_TX_VER, send_len);
+
+        unsigned char time_type = value[1]; // 0x00:Green time    0x01:Local time
+        unsigned char time_data[7];
+
+        my_memcpy(time_data, value + 2, length - 2);
+        /*
+        Data[0] is the year and 0x00 is the year 2000.
+        Data[1] is the month, starting from 1 to ending at 12
+        Data[2] is the date, starting from 1 to 31
+        Data[3] is the clock, starting from 0 to ending at 23
+        Data[4] is minutes, starting from 0 to ending at 59
+        Data[5] is seconds, starting from 0 to ending at 59
+        Data[6] is the week, starting from 1 to 7 and 1 is Monday.
+        */
+
+        // Add the time data handling code here, with time_type as the time type
+
+        unsigned short send_len = 0;
+        send_len = set_wifi_uart_byte(send_len, sub_cmd);
+        wifi_uart_write_frame(MODULE_EXTEND_FUN_CMD, MCU_TX_VER, send_len);
+    }
+    break;
+
+    case 0x03:
+    { // Subcommand  Actively request weather service data
+        if (0x02 != length)
+        {
+            // Data length error
+            return;
         }
+
+        if (value[1] == 0)
+        {
+            // success
+        }
+        else
+        {
+            // fault
+        }
+    }
+    break;
+
+    case 0x04:
+    { // Subcommand  Open module reset status notification
+        if (0x02 != length)
+        {
+            // Data length error
+            return;
+        }
+
+        if (value[1] == 0)
+        {
+            // success
+        }
+        else
+        {
+            // fault
+        }
+    }
+    break;
+
+    case 0x05:
+    { // Subcommand  Module reset status notification
+        if (0x02 != length)
+        {
+            // Data length error
+            return;
+        }
+
+        switch (value[1])
+        {
+        case 0x00:
+            // Module local reset
+
+            break;
+        case 0x01:
+            // APP remote reset
+
+            break;
+        case 0x02:
+            // APP factory reset
+
+            break;
+        default:
+            break;
+        }
+
+        unsigned short send_len = 0;
+        send_len = set_wifi_uart_byte(send_len, sub_cmd);
+        wifi_uart_write_frame(MODULE_EXTEND_FUN_CMD, MCU_TX_VER, send_len);
+    }
+    break;
+
+    default:
         break;
-        
-        default:break;
     }
 }
 #endif
@@ -982,32 +1033,40 @@ void open_module_time_serve_result(const unsigned char value[], unsigned short l
  */
 void BLE_test_result(const unsigned char value[], unsigned short length)
 {
-    #error "Please complete the Bluetooth functional test results processing code by yourself and delete the line"
+#error "Please complete the Bluetooth functional test results processing code by yourself and delete the line"
     unsigned char sub_cmd = value[0];
-    
-    if(0x03 != length) {
-        //Data length error
+
+    if (0x03 != length)
+    {
+        // Data length error
         return;
     }
-    
-    if(0x01 != sub_cmd) {
-        //Subcommand error
+
+    if (0x01 != sub_cmd)
+    {
+        // Subcommand error
         return;
     }
-    
+
     unsigned char result = value[1];
     unsigned char rssi = value[2];
-        
-    if(result == 0) {
-        //test failure
-        if(rssi == 0x00) {
-            //Bluetooth beacon named ty_mdev is not scanned, please check
-        }else if(rssi == 0x01) {
-            //Module is not authorized
+
+    if (result == 0)
+    {
+        // test failure
+        if (rssi == 0x00)
+        {
+            // Bluetooth beacon named ty_mdev is not scanned, please check
         }
-    }else if(result == 0x01) {
-        //Module is not authorized
-        //rssiis the signal strength (0-100, 0 signal is the worst, 100 signal is the strongest)
+        else if (rssi == 0x01)
+        {
+            // Module is not authorized
+        }
+    }
+    else if (result == 0x01)
+    {
+        // Module is not authorized
+        // rssiis the signal strength (0-100, 0 signal is the worst, 100 signal is the strongest)
     }
 }
 #endif
@@ -1028,37 +1087,39 @@ void BLE_test_result(const unsigned char value[], unsigned short length)
  */
 void get_voice_state_result(unsigned char result)
 {
-    #error "Please complete the get voice status code result processing code by yourself and delete the line"
-    switch(result) {
-        case 0:
-            //idle
+#error "Please complete the get voice status code result processing code by yourself and delete the line"
+    switch (result)
+    {
+    case 0:
+        // idle
         break;
-    
-        case 1:
-            //mic mute state
+
+    case 1:
+        // mic mute state
         break;
-        
-        case 2:
-            //wake
+
+    case 2:
+        // wake
         break;
-        
-        case 3:
-            //recording
+
+    case 3:
+        // recording
         break;
-        
-        case 4:
-            //Recognizing
+
+    case 4:
+        // Recognizing
         break;
-    
-        case 5:
-            //Identified successfully
+
+    case 5:
+        // Identified successfully
         break;
-        
-        case 6:
-            //Recognition failed
+
+    case 6:
+        // Recognition failed
         break;
-        
-      default:break;
+
+    default:
+        break;
     }
 }
 
@@ -1072,11 +1133,14 @@ void get_voice_state_result(unsigned char result)
  */
 void set_voice_MIC_silence_result(unsigned char result)
 {
-    #error "Please complete the MIC mute setting processing code by yourself and delete the line"
-    if(result == 0) {
-        //mic on
-    }else {
-        //mic mute
+#error "Please complete the MIC mute setting processing code by yourself and delete the line"
+    if (result == 0)
+    {
+        // mic on
+    }
+    else
+    {
+        // mic mute
     }
 }
 
@@ -1089,8 +1153,7 @@ void set_voice_MIC_silence_result(unsigned char result)
  */
 void set_speaker_voice_result(unsigned char result)
 {
-    #error "Please complete the speaker volume setting result processing code by yourself and delete the line"
-    
+#error "Please complete the speaker volume setting result processing code by yourself and delete the line"
 }
 
 /**
@@ -1104,13 +1167,18 @@ void set_speaker_voice_result(unsigned char result)
  */
 void voice_test_result(unsigned char result)
 {
-    #error "Please complete the audio production test results processing code by yourself and delete the line"
-    if(result == 0x00) {
-        //Turn off audio production test
-    }else if(result == 0x01) {
-        //mic1 audio loop test
-    }else if(result == 0x02) {
-        //mic2 audio loop test
+#error "Please complete the audio production test results processing code by yourself and delete the line"
+    if (result == 0x00)
+    {
+        // Turn off audio production test
+    }
+    else if (result == 0x01)
+    {
+        // mic1 audio loop test
+    }
+    else if (result == 0x02)
+    {
+        // mic2 audio loop test
     }
 }
 
@@ -1124,11 +1192,14 @@ void voice_test_result(unsigned char result)
  */
 void voice_awaken_test_result(unsigned char result)
 {
-    #error "Please complete the wake up the test results processing code by yourself and delete the line"
-    if(result == 0x00) {
-        //Wake up successfully
-    }else if(result == 0x01) {
-        //Wake up failure
+#error "Please complete the wake up the test results processing code by yourself and delete the line"
+    if (result == 0x00)
+    {
+        // Wake up successfully
+    }
+    else if (result == 0x01)
+    {
+        // Wake up failure
     }
 }
 
@@ -1145,81 +1216,100 @@ void voice_module_extend_fun(const unsigned char value[], unsigned short length)
     unsigned char play;
     unsigned char bt_play;
     unsigned short send_len = 0;
-  
-    switch(sub_cmd) {
-        case 0x00: { //Subcommand  MCU function settings
-            if(0x02 != length) {
-                //Data length error
-                return;
-            }
-            
-            if(value[1] == 0) {
-                //success
-            }else {
-                //fault
-            }
-        }
-        break;
-        
-        case 0x01: {  //Subcommand  Status notification
-            if(0x02 > length) {
-                //Data length error
-                return;
-            }
-            
-            unsigned char play = 0xff;
-            unsigned char bt_play = 0xff;
-            
-            const char *str_buff = (const char *)&value[1];
-            const char *str_result = NULL;
-            
-            str_result = strstr(str_buff,"play") + my_strlen("play") + 2;
-            if(NULL == str_result) {
-                //data error
-                goto ERR_EXTI;
-            }
-            
-            if(0 == memcmp(str_result, "true", my_strlen("true"))) {
-                play = 1;
-            }else if(0 == memcmp(str_result, "false", my_strlen("false"))) {
-                play = 0;
-            }else {
-                //data error
-                goto ERR_EXTI;
-            }
-            
-            str_result = strstr(str_buff,"bt_play") + my_strlen("bt_play") + 2;
-            if(NULL == str_result) {
-                //data error
-                goto ERR_EXTI;
-            }
-            
-            if(0 == memcmp(str_result, "true", my_strlen("true"))) {
-                bt_play = 1;
-            }else if(0 == memcmp(str_result, "false", my_strlen("false"))) {
-                bt_play = 0;
-            }else {
-                //data error
-                goto ERR_EXTI;
-            }
-            
-            #error "Please complete the Voice module extension function code by yourself and delete the line"
-            //MCU setting only supports "play/pause" "Bluetooth switch"
-            //play     play/pause function 1 (play) / 0 (pause)
-            //bt_play  Bluetooth switch function 1 (on) / 0 (off)
-            
-            
-            
-            send_len = 0;
-            send_len = set_wifi_uart_byte(send_len, sub_cmd);
-            send_len = set_wifi_uart_byte(send_len, 0x00);
-            wifi_uart_write_frame(MODULE_EXTEND_FUN_CMD, MCU_TX_VER, send_len);
-        }
-        break;
 
-        default:break;
+    switch (sub_cmd)
+    {
+    case 0x00:
+    { // Subcommand  MCU function settings
+        if (0x02 != length)
+        {
+            // Data length error
+            return;
+        }
+
+        if (value[1] == 0)
+        {
+            // success
+        }
+        else
+        {
+            // fault
+        }
     }
-    
+    break;
+
+    case 0x01:
+    { // Subcommand  Status notification
+        if (0x02 > length)
+        {
+            // Data length error
+            return;
+        }
+
+        unsigned char play = 0xff;
+        unsigned char bt_play = 0xff;
+
+        const char *str_buff = (const char *)&value[1];
+        const char *str_result = NULL;
+
+        str_result = strstr(str_buff, "play") + my_strlen("play") + 2;
+        if (NULL == str_result)
+        {
+            // data error
+            goto ERR_EXTI;
+        }
+
+        if (0 == memcmp(str_result, "true", my_strlen("true")))
+        {
+            play = 1;
+        }
+        else if (0 == memcmp(str_result, "false", my_strlen("false")))
+        {
+            play = 0;
+        }
+        else
+        {
+            // data error
+            goto ERR_EXTI;
+        }
+
+        str_result = strstr(str_buff, "bt_play") + my_strlen("bt_play") + 2;
+        if (NULL == str_result)
+        {
+            // data error
+            goto ERR_EXTI;
+        }
+
+        if (0 == memcmp(str_result, "true", my_strlen("true")))
+        {
+            bt_play = 1;
+        }
+        else if (0 == memcmp(str_result, "false", my_strlen("false")))
+        {
+            bt_play = 0;
+        }
+        else
+        {
+            // data error
+            goto ERR_EXTI;
+        }
+
+#error "Please complete the Voice module extension function code by yourself and delete the line"
+        // MCU setting only supports "play/pause" "Bluetooth switch"
+                     //play     play/pause function 1 (play) / 0 (pause)
+             //bt_play  Bluetooth switch function 1 (on) / 0 (off)
+
+            send_len = 0;
+        send_len = set_wifi_uart_byte(send_len, sub_cmd);
+        send_len = set_wifi_uart_byte(send_len, 0x00);
+        wifi_uart_write_frame(MODULE_EXTEND_FUN_CMD, MCU_TX_VER, send_len);
+    }
+    break;
+
+    default:
+        break;
+    }
+
     return;
 
 ERR_EXTI:
@@ -1230,7 +1320,3 @@ ERR_EXTI:
     return;
 }
 #endif
-
-
-
-

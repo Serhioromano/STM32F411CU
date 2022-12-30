@@ -31,6 +31,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define BLINK500 500
+#define BLINK250 250
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,7 +44,15 @@
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+unsigned char dp_pump_enable = 0;
+unsigned char dp_pump_state = 0;
+unsigned char dp_pump_stateM = 0;
+unsigned long dp_curr_press = 0;
+unsigned long dp_set_press = 0;
+unsigned long dp_delt_press = 0;
+unsigned long dp_sens_max = 0;
 
+uint32_t last_time;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -72,6 +82,7 @@ int main(void)
 
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
+    
 
     /* USER CODE BEGIN Init */
 
@@ -88,24 +99,36 @@ int main(void)
     MX_GPIO_Init();
     MX_USART1_UART_Init();
     /* USER CODE BEGIN 2 */
-    wifi_protocol_init();
+    // wifi_protocol_init();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
+
     while (1)
     {
-        wifi_uart_service();
-        // HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-        // HAL_Delay(50);
-        if (HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET)
+        if (HAL_GetTick() - last_time >= BLINK250)
         {
-            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
+            last_time = HAL_GetTick();
+            HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         }
-        else
-        {
-            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
-        }
+        // wifi_uart_service();
+        // // HAL_Delay(50);
+        // if (HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET &&
+        //     mcu_get_wifi_work_state() != SMART_CONFIG_STATE)
+        // {
+        //     HAL_Delay(1000);
+        //     if (HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET)
+        //     {
+        //         last_time = HAL_GetTick();
+        //         mcu_set_wifi_mode(SMART_CONFIG);
+        //     }
+        // }
+        // if ((mcu_get_wifi_work_state() != WIFI_LOW_POWER) &&
+        //     (mcu_get_wifi_work_state() != WIFI_CONN_CLOUD) &&
+        //     (mcu_get_wifi_work_state() != WIFI_SATE_UNKNOW))
+        // {
+        // }
 
         /* USER CODE END WHILE */
 
@@ -134,7 +157,12 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
     RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+    RCC_OscInitStruct.PLL.PLLM = 8;
+    RCC_OscInitStruct.PLL.PLLN = 72;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLQ = 4;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
     {
         Error_Handler();
@@ -143,12 +171,12 @@ void SystemClock_Config(void)
     /** Initializes the CPU, AHB and APB buses clocks
      */
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
     {
         Error_Handler();
     }
