@@ -1,9 +1,25 @@
 FROM debian:bookworm
 
-RUN apt update && apt upgrade -y
-RUN apt install -y stlink-tools \
+RUN apt update && apt upgrade -y && \
+    apt install -y stlink-tools \
     git wget lbzip2 make cmake \
-    lbzip2
+    lbzip2 curl build-essential mc \
+    libncursesw5 openocd gcc-arm-none-eabi
+
+# RUN ARM_TOOLCHAIN_VERSION=$(curl -s https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads | grep -Po '<h4>Version \K.+(?=</h4>)')
+# # RUN wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${ARM_TOOLCHAIN_VERSION}/binrel/arm-gnu-toolchain-${ARM_TOOLCHAIN_VERSION}-x86_64-arm-none-eabi.tar.xz" -O /tmp/gcc-arm-none-eabi.tar.xz
+# RUN curl -Lo gcc-arm-none-eabi.tar.xz "https://developer.arm.com/-/media/Files/downloads/gnu/${ARM_TOOLCHAIN_VERSION}/binrel/arm-gnu-toolchain-${ARM_TOOLCHAIN_VERSION}-x86_64-arm-none-eabi.tar.xz"
+# RUN mkdir -p /opt/gcc-arm-none-eabi
+# RUN tar -xf gcc-arm-none-eabi.tar.xz -C /opt/gcc-arm-none-eabi --strip-components=1
+# RUN ln -s /opt/gcc-arm-none-eabi/bin/* /usr/local/bin
+# RUN echo 'export PATH=$PATH:/opt/gcc-arm-none-eabi/bin' >> ~/.bashrc
+# RUN source  ~/.bashrc
+
+# RUN ARM_TOOLCHAIN_VERSION=$(curl -s https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads | grep -Po '<h4>Version \K.+(?=</h4>)') && \
+#     mkdir /opt/gcc-arm-none-eabi && \
+#     tar xf gcc-arm-none-eabi.tar.xz --strip-components=1 -C /opt/gcc-arm-none-eabi && \
+#     echo 'export PATH=$PATH:/opt/gcc-arm-none-eabi/bin' >> ~/.bashrc && \
+#     source  ~/.bashrc
 
 
 #  -y && dnf install -y \
