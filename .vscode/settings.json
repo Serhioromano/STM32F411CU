@@ -8,7 +8,10 @@
         "system.h": "c",
         "stm32f4xx_hal_def.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "usb_device.h": "c",
+        "usbd_desc.h": "c",
+        "usbd_cdc_if.h": "c"
     },
     "spellright.language": [
         "en"
@@ -25,5 +28,12 @@
     "git.autofetchPeriod": 3600,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "cortex-debug.gdbPath": "/usr/bin/gdb",
-    "cortex-debug.stutilPath": "/usr/bin/st-util"
+    "cortex-debug.stutilPath": "/usr/bin/st-util",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/sergey/www/STM32F411CU/build",
+            "binaryPath": "/home/sergey/www/STM32F411CU/build/STM32F411CU.elf",
+            "binaryArgs": []
+        }
+    ]
 }

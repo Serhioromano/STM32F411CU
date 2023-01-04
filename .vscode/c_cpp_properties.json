@@ -8,7 +8,13 @@
                 "${workspaceFolder}/Core/Src",
                 "${workspaceFolder}/Drivers/CMSIS/Include",
                 "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
-                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc"
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "${workspaceFolder}/USB_DEVICE/App",
+                "${workspaceFolder}/USB_DEVICE/Target",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Core/Src",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src"
             ],
             "defines": [
                 "USE_HAL_DRIVER",
@@ -29,7 +35,13 @@
                     "${workspaceFolder}/Core/Src",
                     "${workspaceFolder}/Drivers/CMSIS/Include",
                     "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
-                    "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc"
+                    "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
+                    "${workspaceFolder}/USB_DEVICE/App",
+                    "${workspaceFolder}/USB_DEVICE/Target",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Core/Src",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/brows.vs.db"
