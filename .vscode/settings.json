@@ -19,7 +19,7 @@
         "plaintext"
     ],
     "terminal.integrated.autoReplies": {
-        "[sudo] password for sergey:": ""
+        "[sudo] password for sergey:": "123456"
     },
     "git.autofetch": true,
     "git.autofetchPeriod": 3600,
