@@ -23,6 +23,7 @@ Tuya is not responsible for the results of MCU functions.
 
 //#include "stm32f1xx.h"
 #include "stdio.h"
+#include "usart.h"
 #include "string.h"
 #include "protocol.h"
 #include "system.h"
