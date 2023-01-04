@@ -22,12 +22,13 @@
         "plaintext"
     ],
     "terminal.integrated.autoReplies": {
-        "[sudo] password for sergey:": "123456"
+        "[sudo] password for sergey:": "123456\n"
     },
     "git.autofetch": true,
     "git.autofetchPeriod": 3600,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
-    "cortex-debug.gdbPath": "/usr/bin/gdb",
+    "cortex-debug.gdbPath": "/usr/bin/gdb-multiarch",
+    "cortex-debug.openocdPath": "/usr/local/bin/openocd",
     "cortex-debug.stutilPath": "/usr/bin/st-util",
     "makefile.launchConfigurations": [
         {

@@ -13,7 +13,8 @@
 			"extensions": [
 				"johnpapa.vscode-peacock",
 				"ms-vscode.cpptools-extension-pack",
-				"ms-vscode.makefile-tools"
+				"ms-vscode.makefile-tools",
+                "vscode.vscode-serial-monitor"
 			]
 		}
 	}

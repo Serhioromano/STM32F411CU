@@ -8,6 +8,8 @@ sudo apt-get install git build-essential libusb-1.0.0-dev cmake
 sudo apt install linux-tools-virtual hwdata
 sudo update-alternatives --install /usr/local/bin/usbip usbip `ls /usr/lib/linux-tools/*/usbip | tail -n1` 20
 sudo apt install stlink-tools
+sudo systemctl restart udev
+sudo /etc/init.d/udev restart
 sudo apt -y install openocd
 ```
 
@@ -38,7 +40,7 @@ rm -rf gcc-arm-none-eabi.tar.xz
 GDB debug
 
 ```bash
-sudo apt install -y libncursesw5
+sudo apt install -y libncursesw5 gdb-multiarch
 arm-none-eabi-gdb --version
 ```
 

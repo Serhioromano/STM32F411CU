@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceFolder}/build/STM32F411CU.elf",
+            "name": "Debug with OpenOCD",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "/usr/local/share/openocd/scripts/interface/stlink.cfg",
+                "/usr/local/share/openocd/scripts/target/stm32f4x.cfg"
+            ],
+            "searchDir": [],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
             "name": "Launch",
             "cwd": "${workspaceFolder}",
             "executable": "${workspaceFolder}/build/STM32F411CU.elf",
@@ -12,7 +27,9 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "device": "STM32F411CU",
-            "preLaunchCommands": ["make -j4"],
+            "preLaunchCommands": [
+                "make -j4"
+            ],
             "preLaunchTask": "flash-openocd",
             "showDevDebugOutput": "raw",
             "svdFile": "",
@@ -30,9 +47,7 @@
                         "encoding": "ascii"
                     }
                 ]
-
             }
-
         }
     ]
 }
