@@ -105,12 +105,12 @@ and pass the received data as a parameter to the serial port send function.
  */
 void uart_transmit_output(unsigned char value)
 {
-    extern UART_HandleTypeDef huart1;
+    extern UART_HandleTypeDef huart2;
 
-    HAL_UART_Transmit(&huart1, (uint8_t *)value, sizeof(value), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t *)value, sizeof(value), HAL_MAX_DELAY);
 
     /*
-        #error "Please fill in the MCU serial port send function and delete the line"
+#error "Please fill in the MCU serial port send function and delete the line"
         //Example:
         extern void Uart_PutChar(unsigned char value);
         Uart_PutChar(value);	                                //Serial port send function
@@ -341,7 +341,7 @@ Please implement the internal data of the function according to the actual dp da
  */
 void upgrade_package_choose(unsigned char package_sz)
 {
-// #error "Please implement the upgrade package size selection processing code by yourself. Please delete this line after completion"
+    // #error "Please implement the upgrade package size selection processing code by yourself. Please delete this line after completion"
     unsigned short send_len = 0;
     send_len = set_wifi_uart_byte(send_len, package_sz);
     wifi_uart_write_frame(UPDATE_START_CMD, MCU_TX_VER, send_len);
@@ -357,7 +357,7 @@ void upgrade_package_choose(unsigned char package_sz)
  */
 unsigned char mcu_firm_update_handle(const unsigned char value[], unsigned long position, unsigned short length)
 {
-// #error "Please complete the MCU firmware upgrade processing code yourself. Please delete the line after completion"
+    // #error "Please complete the MCU firmware upgrade processing code yourself. Please delete the line after completion"
     if (length == 0)
     {
         // Firmware data transmission completed
@@ -444,7 +444,7 @@ void mcu_write_rtctime(unsigned char time[])
  */
 void wifi_test_result(unsigned char result, unsigned char rssi)
 {
-// #error "Please implement the wifi function test success/failure code by yourself. Please delete the line after completion"
+    // #error "Please implement the wifi function test success/failure code by yourself. Please delete the line after completion"
     if (result == 0)
     {
         // Test failed
@@ -618,7 +618,7 @@ void get_upload_syn_result(unsigned char result)
  */
 void get_wifi_status(unsigned char result)
 {
-// #error "Complete the get the WIFI status result processing code yourself and delete the line"
+    // #error "Complete the get the WIFI status result processing code yourself and delete the line"
 
     switch (result)
     {

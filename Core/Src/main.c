@@ -55,7 +55,7 @@ unsigned long dp_delt_press = 0;
 unsigned long dp_sens_max = 0;
 
 uint32_t last_time;
-uint8_t buffer[] = "Hello World\n\r";
+uint8_t buffer[] = "Hello World!!\n\r";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

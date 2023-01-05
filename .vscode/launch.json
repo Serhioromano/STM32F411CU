@@ -11,13 +11,32 @@
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
+            "device": "STM32F411CU",
+            "preLaunchCommands": [
+                "make -j4"
+            ],
             "configFiles": [
                 "/usr/local/share/openocd/scripts/interface/stlink.cfg",
                 "/usr/local/share/openocd/scripts/target/stm32f4x.cfg"
             ],
             "searchDir": [],
             "runToEntryPoint": "main",
-            "showDevDebugOutput": "none"
+            "showDevDebugOutput": "none",
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 100000000,
+                "swoFrequency": 4000000,
+                "source": "probe",
+                "decoders": [
+                    {
+                        "label": "ITM port 0 output",
+                        "type": "console",
+                        "port": 0,
+                        "showOnStartup": true,
+                        "encoding": "ascii"
+                    }
+                ]
+            }
         },
         {
             "name": "Launch",
@@ -27,12 +46,12 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "device": "STM32F411CU",
-            "preLaunchCommands": [
-                "make -j4"
-            ],
             "preLaunchTask": "flash-openocd",
             "showDevDebugOutput": "raw",
             "svdFile": "",
+            "preLaunchCommands": [
+                "make -j4"
+            ],
             "swoConfig": {
                 "enabled": true,
                 "cpuFrequency": 100000000,

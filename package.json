@@ -1,7 +1,7 @@
 {
-    "name": "@<scope>/STM32F411CU",
-    "version": "0.1.0",
-    "description": "A source xPack with <your-description-here>",
+    "name": "STM32F411CU",
+    "version": "1.0.0",
+    "description": "Tuya Hello Worls STM32 project for WBR3 MCU",
     "main": "",
     "scripts": {
         "upload": "sudo st-flash --reset write build/STM32F411CU.bin 0x08000000",

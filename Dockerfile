@@ -1,10 +1,7 @@
 FROM debian:bookworm
 
 RUN apt update && apt upgrade -y && \
-    apt install -y stlink-tools \
-    git wget lbzip2 make cmake \
-    lbzip2 curl build-essential mc \
-    libncursesw5 openocd gcc-arm-none-eabi
+    apt install -y stlink-tools git wget lbzip2 make cmake lbzip2 curl build-essential mc libncursesw5 openocd  libusb-1.0-0-dev gdb-multiarch libtool libusb-1.0-0
 
 # RUN ARM_TOOLCHAIN_VERSION=$(curl -s https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads | grep -Po '<h4>Version \K.+(?=</h4>)')
 # # RUN wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${ARM_TOOLCHAIN_VERSION}/binrel/arm-gnu-toolchain-${ARM_TOOLCHAIN_VERSION}-x86_64-arm-none-eabi.tar.xz" -O /tmp/gcc-arm-none-eabi.tar.xz
