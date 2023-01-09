@@ -21,7 +21,7 @@ Tuya is not responsible for the results of MCU functions.
 #define MCU_API_GLOBAL
 
 #include "wifi.h"
-
+#include "main.h"
 /**
  * @brief  hex to bcd
  * @param[in] {Value_H} High Byte
@@ -639,7 +639,7 @@ unsigned long mcu_get_dp_download_value(const unsigned char value[], unsigned sh
 void uart_receive_input(unsigned char value)
 {
 // #error "Please call uart_receive_input(value) in the serial port receive interrupt. The serial port data is processed by MCU_SDK. The user should not process it separately. Delete the line after completion."
-
+    ENTER_CRITICAL;
     if (1 == rx_buf_out - rx_buf_in)
     {
         // UART receive buffer is full
@@ -658,6 +658,8 @@ void uart_receive_input(unsigned char value)
 
         *rx_buf_in++ = value;
     }
+
+    EXIT_CRITICAL;
 }
 
 /**

@@ -33,6 +33,7 @@ Tuya is not responsible for the results of MCU functions.
 3:Do not call the escalation function in the interrupt/timer interrupt
 ******************************************************************************/
 #include "wifi.h"
+#include "main.h"
 
 #ifdef WEATHER_ENABLE
 /**
@@ -108,13 +109,6 @@ void uart_transmit_output(unsigned char value)
     extern UART_HandleTypeDef huart2;
 
     HAL_UART_Transmit(&huart2, (uint8_t *)value, sizeof(value), HAL_MAX_DELAY);
-
-    /*
-#error "Please fill in the MCU serial port send function and delete the line"
-        //Example:
-        extern void Uart_PutChar(unsigned char value);
-        Uart_PutChar(value);	                                //Serial port send function
-    */
 }
 
 /******************************************************************************
@@ -203,6 +197,11 @@ static unsigned char dp_download_pump_en_handle(const unsigned char value[], uns
     dp_pump_enable = mcu_get_dp_download_bool(value, length);
 
     ret = mcu_dp_bool_update(DPID_PUMP_EN, dp_pump_enable);
+    if (dp_pump_enable == 0)
+        PUMP_LOW;
+    else
+        PUMP_HIGH;
+    
     if (ret == SUCCESS)
         return SUCCESS;
     else

@@ -36,16 +36,20 @@
 /* USER CODE BEGIN PD */
 #define BLINK500 500
 #define BLINK250 250
+#define NETWORK_CONNECT_SUCCESS 1
+#define NETWORK_CONNECT_ERROR 0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+typeUART2_handleRecvByte pvUART2_handleRecvByte = NULL;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+uint8_t Rx_data[20];
+
 unsigned char dp_pump_enable = 0;
 unsigned char dp_pump_state = 0;
 unsigned char dp_pump_stateM = 0;
@@ -67,6 +71,22 @@ extern uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+static uint8_t get_wifi_work_state(void)
+{
+    if ((mcu_get_wifi_work_state() == WIFI_CONNECTED) || (mcu_get_wifi_work_state() == WIFI_CONN_CLOUD))
+    {
+        return NETWORK_CONNECT_SUCCESS;
+    }
+    return NETWORK_CONNECT_ERROR;
+}
+
+void UART_HandleRecvByteCallBackInit(typeUART2_handleRecvByte func)
+{
+    if (func != NULL)
+    {
+        pvUART2_handleRecvByte = func;
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -100,7 +120,9 @@ int main(void)
     MX_USART2_UART_Init();
     MX_USB_DEVICE_Init();
     /* USER CODE BEGIN 2 */
-    //   wifi_protocol_init();
+    HAL_UART_Receive_IT(&huart2, Rx_data, 1); // Enable receive interrupt
+    UART_HandleRecvByteCallBackInit(uart_receive_input);
+    wifi_protocol_init();
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -108,15 +130,16 @@ int main(void)
 
     while (1)
     {
-        CDC_Transmit_FS(buffer, sizeof(buffer));
-        HAL_Delay(1000);
+        // CDC_Transmit_FS(buffer, sizeof(buffer));
+        // HAL_Delay(1000);
+
+        wifi_uart_service();
 
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-        // if (HAL_GetTick() - last_time >= BLINK500)
-        // {
-        //     last_time = HAL_GetTick();
-        // }
-        // wifi_uart_service();
+        if (HAL_GetTick() - last_time >= BLINK500)
+        {
+            last_time = HAL_GetTick();
+        }
         // // HAL_Delay(50);
         // if (HAL_GPIO_ReadPin(BTN_GPIO_Port, BTN_Pin) == GPIO_PIN_RESET &&
         //     mcu_get_wifi_work_state() != SMART_CONFIG_STATE)
@@ -186,7 +209,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{ // Callback
+    if (huart->Instance == USART2)
+    { // Check Uart2?
+        if (pvUART2_handleRecvByte != NULL)
+        {
+            HAL_UART_Receive_IT(&huart2, Rx_data, 1); // Receive 1 byte
+            typeUART2_handleRecvByte(Rx_data[0]);     // Push to queue
+        }
+    }
+}
 /* USER CODE END 4 */
 
 /**
