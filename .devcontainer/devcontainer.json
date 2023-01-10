@@ -14,7 +14,8 @@
 				"johnpapa.vscode-peacock",
 				"ms-vscode.cpptools-extension-pack",
 				"ms-vscode.makefile-tools",
-                "vscode.vscode-serial-monitor"
+                "vscode.vscode-serial-monitor",
+                "mhutchie.git-graph"
 			]
 		}
 	}
